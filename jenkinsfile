@@ -11,7 +11,7 @@ pipeline {
         stage('Clone') {
             steps {
                 echo "Cloning from GitHub..."
-                git 'https://github.com/your-username/your-repo.git'
+                git 'https://github.com/lavanyagowda863/Jenkins.git'
             }
         }
 
