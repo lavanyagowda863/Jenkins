@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "multi-stage-app"
+        CONTAINER_NAME = "multi-stage-container"
+    }
+
+    stages {
+
+        stage('Clone') {
+            steps {
+                echo "Cloning from GitHub..."
+                git 'https://github.com/your-username/your-repo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Build stage (for static app)"
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo "Building Docker image..."
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying container..."
+
+                sh '''
+                docker rm -f $CONTAINER_NAME || true
+                docker run -d -p 8085:80 --name $CONTAINER_NAME $IMAGE_NAME
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment Successful!"
+        }
+        failure {
+            echo "❌ Pipeline Failed!"
+        }
+    }
+}
